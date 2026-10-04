@@ -6,7 +6,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  vst3:
+  macos:
     runs-on: macos-14
     env:
       BUNDLE: build/WinampClassicVisualizer_artefacts/Release/VST3/Winamp Classic Visualizer.vst3
@@ -38,3 +38,33 @@ jobs:
         with:
           name: WinampClassicVisualizer-VST3-macOS
           path: WinampClassicVisualizer-VST3-macOS.zip
+
+  windows:
+    runs-on: windows-latest
+    env:
+      BUNDLE: build/WinampClassicVisualizer_artefacts/Release/VST3/Winamp Classic Visualizer.vst3
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Configure
+        run: cmake -B build
+
+      - name: Build
+        run: cmake --build build --config Release --parallel
+
+      - name: Unit tests
+        run: ctest --test-dir build -C Release --output-on-failure
+
+      - name: Validate with pluginval
+        run: |
+          Invoke-WebRequest -Uri https://github.com/Tracktion/pluginval/releases/download/v1.0.4/pluginval_Windows.zip -OutFile pluginval.zip
+          Expand-Archive pluginval.zip -DestinationPath pluginval
+          ./pluginval/pluginval.exe --strictness-level 5 --validate "$env:BUNDLE"
+
+      - name: Package
+        run: Compress-Archive -Path "$env:BUNDLE" -DestinationPath WinampClassicVisualizer-VST3-Windows.zip
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: WinampClassicVisualizer-VST3-Windows
+          path: WinampClassicVisualizer-VST3-Windows.zip

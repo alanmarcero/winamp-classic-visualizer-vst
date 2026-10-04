@@ -36,20 +36,33 @@ The defaults are Winamp's, from `config.h`. Every option except Colors and Size 
 
 ## Build
 
-GitHub Actions builds a universal macOS VST3, runs the unit tests and `pluginval`, and uploads the zipped bundle as an artifact. To build by hand:
+GitHub Actions builds a universal macOS VST3 and a 64-bit Windows VST3. On each platform it runs the unit tests and `pluginval`, then uploads the zipped bundle as an artifact. To build by hand:
 
 ```sh
 cmake -B build -DCMAKE_BUILD_TYPE=Release
-cmake --build build --parallel
-ctest --test-dir build --output-on-failure
+cmake --build build --config Release --parallel
+ctest --test-dir build -C Release --output-on-failure
 ```
 
 The unit tests cover the core in `Source/Core` and need no JUCE. Their expected pixels come from tracing `draw_sa` by hand.
 
 ## Install
 
-Unzip the artifact into `~/Library/Audio/Plug-Ins/VST3/`. The bundle is signed ad hoc, so clear the quarantine flag once:
+Download the artifact for your platform from the latest run on the repo's Actions page. GitHub wraps each artifact in a zip, so unzip it once to get the plugin's zip, then unzip that.
+
+### macOS
+
+Move `Winamp Classic Visualizer.vst3` into `~/Library/Audio/Plug-Ins/VST3/`. The bundle is signed ad hoc, so clear the quarantine flag once:
 
 ```sh
 xattr -dr com.apple.quarantine ~/Library/Audio/Plug-Ins/VST3/"Winamp Classic Visualizer.vst3"
 ```
+
+### Windows
+
+1. Right-click `WinampClassicVisualizer-VST3-Windows.zip`, select **Properties**, check **Unblock**, and select **OK**. Do this before you unzip, so the extracted files are not marked as downloaded.
+2. Unzip it. You get a folder named `Winamp Classic Visualizer.vst3`.
+3. Move that folder into `C:\Program Files\Common Files\VST3\`. Windows asks for administrator permission.
+4. Rescan plugins in your DAW.
+
+Only 64-bit DAWs can load it.
