@@ -26,8 +26,9 @@ public:
         std::size_t offset = 0;
         while (offset < left.size()) {
             const std::size_t count = std::min(std::size_t(kFftSize) - used_, left.size() - offset);
-            std::transform(left.begin() + offset, left.begin() + offset + count, right.begin() + offset,
-                           buffer_.begin() + used_, std::plus<float>());
+            const auto leftChunk = left.subspan(offset, count);
+            std::transform(leftChunk.begin(), leftChunk.end(), right.subspan(offset, count).begin(),
+                           std::span(buffer_).subspan(used_).begin(), std::plus<float>());
             used_ += count;
             offset += count;
             if (used_ == kFftSize)

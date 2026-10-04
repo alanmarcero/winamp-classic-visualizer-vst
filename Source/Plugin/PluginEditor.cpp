@@ -24,11 +24,11 @@ void takeLatest(FrameQueue<Frame>& queue, Frame& current, std::uint32_t& lastMs,
 
 } // namespace
 
-VisualizerEditor::VisualizerEditor(VisualizerProcessor& processor)
-    : AudioProcessorEditor(processor)
-    , processor_(processor)
+VisualizerEditor::VisualizerEditor(VisualizerProcessor& owner)
+    : AudioProcessorEditor(owner)
+    , processor_(owner)
 {
-    setScale(processor.editorScale);
+    setScale(owner.editorScale);
     renderImage();
     startTimerHz(wcv::kTickHz);
 }

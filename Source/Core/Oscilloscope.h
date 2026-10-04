@@ -22,8 +22,8 @@ public:
         std::size_t offset = 0;
         while (offset < left.size()) {
             const std::size_t count = std::min(std::size_t(kScopeBlock) - used_, left.size() - offset);
-            std::copy_n(left.begin() + offset, count, left_.begin() + used_);
-            std::copy_n(right.begin() + offset, count, right_.begin() + used_);
+            std::ranges::copy(left.subspan(offset, count), std::span(left_).subspan(used_).begin());
+            std::ranges::copy(right.subspan(offset, count), std::span(right_).subspan(used_).begin());
             used_ += count;
             offset += count;
             if (used_ == kScopeBlock) {

@@ -10,7 +10,7 @@
 // as on Winamp's main window.
 class VisualizerEditor final : public juce::AudioProcessorEditor, private juce::Timer {
 public:
-    explicit VisualizerEditor(VisualizerProcessor& processor);
+    explicit VisualizerEditor(VisualizerProcessor& owner);
 
     void paint(juce::Graphics& g) override;
     void mouseDown(const juce::MouseEvent& event) override;
