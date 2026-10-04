@@ -4,7 +4,22 @@ The spectrum analyzer and oscilloscope from Winamp's classic main window, as a V
 
 ## Private use only
 
-This code is ported from the Winamp source release (`Src/Winamp/draw_sa.cpp`, `SA.cpp`, `classic_vis.cpp`, `SABuffer.cpp`, `draw.cpp`, `config.h`), mirrored at [alexfreud/winamp](https://github.com/alexfreud/winamp). That code is under the Winamp Collaborative License 1.0, which allows changes for private use and forbids distribution of changed versions. Keep this repo private and do not share the built plugin.
+This code is ported from the Winamp source release (see [Source reference](#source-reference)). That code is under the Winamp Collaborative License 1.0, which allows changes for private use and forbids distribution of changed versions. Keep this repo private and do not share the built plugin.
+
+## Source reference
+
+The port is based on the Winamp source release, as mirrored at [alexfreud/winamp](https://github.com/alexfreud/winamp) (branch `community`, commit [`0954e03`](https://github.com/alexfreud/winamp/tree/0954e03b3acbc11b6c90298598db6b6469568d72)). These are the files it reads from:
+
+| Original file | What it holds | Ported to |
+|---|---|---|
+| [`Src/Winamp/SABuffer.cpp`](https://github.com/alexfreud/winamp/blob/0954e03b3acbc11b6c90298598db6b6469568d72/Src/Winamp/SABuffer.cpp) | L + R sum, 512-sample Hann window, 256-sample step | `Source/Core/SpectrumAnalyzer.*` |
+| [`Src/Winamp/classic_vis.cpp`](https://github.com/alexfreud/winamp/blob/0954e03b3acbc11b6c90298598db6b6469568d72/Src/Winamp/classic_vis.cpp) | `makeSpecData` (75 bands) and `makeOscData` (scope points) | `Source/Core/SpectrumAnalyzer.*`, `Source/Core/Oscilloscope.*` |
+| [`Src/Winamp/draw_sa.cpp`](https://github.com/alexfreud/winamp/blob/0954e03b3acbc11b6c90298598db6b6469568d72/Src/Winamp/draw_sa.cpp) | `draw_sa`: bars, peaks, falloff, colorings, scope styles | `Source/Core/ClassicVis.*` |
+| [`Src/Winamp/SA.cpp`](https://github.com/alexfreud/winamp/blob/0954e03b3acbc11b6c90298598db6b6469568d72/Src/Winamp/SA.cpp) | The vis thread: refresh divider, 400 ms frame match | `Source/Core/ClassicVis.*`, `Source/Plugin/PluginEditor.cpp` |
+| [`Src/Winamp/draw.cpp`](https://github.com/alexfreud/winamp/blob/0954e03b3acbc11b6c90298598db6b6469568d72/Src/Winamp/draw.cpp) | Built-in vis palette and the `viscolor.txt` reader | `Source/Core/Palette.*` |
+| [`Src/Winamp/config.h`](https://github.com/alexfreud/winamp/blob/0954e03b3acbc11b6c90298598db6b6469568d72/Src/Winamp/config.h) | Default option values | `Source/Core/VisSettings.h` |
+| [`Src/Winamp/options_classic.cpp`](https://github.com/alexfreud/winamp/blob/0954e03b3acbc11b6c90298598db6b6469568d72/Src/Winamp/options_classic.cpp) | The options and their ranges | `Source/Plugin/Parameters.cpp` |
+| [`Src/Winamp/FFT.cpp`](https://github.com/alexfreud/winamp/blob/0954e03b3acbc11b6c90298598db6b6469568d72/Src/Winamp/FFT.cpp) | `fft_9`, which calls `nsutil` (body not in the release) | `Source/Core/Fft.*` (written new) |
 
 ## What is ported
 
