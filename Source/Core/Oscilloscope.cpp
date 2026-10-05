@@ -3,6 +3,7 @@
 
 #include "Oscilloscope.h"
 
+#include <algorithm>
 #include <cmath>
 #include <ranges>
 

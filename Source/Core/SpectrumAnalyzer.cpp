@@ -5,6 +5,7 @@
 
 #include "Fft.h"
 
+#include <algorithm>
 #include <bit>
 #include <cmath>
 #include <numbers>
