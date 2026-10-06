@@ -1,6 +1,3 @@
-// Ported from Src/Winamp/SABuffer.cpp and Src/Winamp/classic_vis.cpp,
-// (c) Nullsoft, Inc. Winamp Collaborative License 1.0: private use only.
-
 #include "SpectrumAnalyzer.h"
 
 #include "Fft.h"

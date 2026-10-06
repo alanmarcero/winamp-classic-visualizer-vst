@@ -11,7 +11,7 @@ namespace wcv {
 
 using ScopeFrame = std::array<std::int8_t, kBands>;
 
-// Port of makeOscData (Src/Winamp/classic_vis.cpp). Winamp gives the vis
+// Matches makeOscData (Src/Winamp/classic_vis.cpp). Winamp gives the vis
 // 576 samples per block and takes 75 points from them.
 class Oscilloscope {
 public:

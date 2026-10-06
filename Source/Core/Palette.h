@@ -21,7 +21,7 @@ inline constexpr Palette kDefaultPalette { {
     { 181, 189, 189 }, { 160, 170, 175 }, { 148, 156, 165 }, { 150, 150, 150 },
 } };
 
-// Port of the viscolor.txt reader in Src/Winamp/draw.cpp. Colours the
+// Matches the viscolor.txt reader in Src/Winamp/draw.cpp. Colours the
 // file does not set keep their defaults.
 Palette parseViscolor(std::string_view text);
 

@@ -1,6 +1,3 @@
-// Ported from the viscolor.txt reader in Src/Winamp/draw.cpp,
-// (c) Nullsoft, Inc. Winamp Collaborative License 1.0: private use only.
-
 #include "Palette.h"
 
 #include <algorithm>

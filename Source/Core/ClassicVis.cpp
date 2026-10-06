@@ -1,7 +1,3 @@
-// Ported from draw_sa in Src/Winamp/draw_sa.cpp and bivis_thread in
-// Src/Winamp/SA.cpp, (c) Nullsoft, Inc. Winamp Collaborative License 1.0:
-// private use only.
-
 #include "ClassicVis.h"
 
 #include <algorithm>

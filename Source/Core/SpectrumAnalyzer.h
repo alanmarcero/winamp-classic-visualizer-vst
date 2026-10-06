@@ -12,7 +12,7 @@ namespace wcv {
 
 using SpectrumFrame = std::array<std::uint8_t, kBands>;
 
-// Port of SABuffer (Src/Winamp/SABuffer.cpp) and makeSpecData
+// Matches SABuffer (Src/Winamp/SABuffer.cpp) and makeSpecData
 // (Src/Winamp/classic_vis.cpp). Sums L and R into a 512-sample window,
 // moves the window 256 samples per frame, and gives 75 bands of 0 to 255.
 class SpectrumAnalyzer {

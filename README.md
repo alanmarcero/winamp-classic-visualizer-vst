@@ -1,16 +1,16 @@
 # Winamp Classic Visualizer (VST3)
 
-The spectrum analyzer and oscilloscope from Winamp's classic main window, as a VST3 effect. The plugin passes audio through untouched and draws the 76 x 16 vis area at 1x to 5x.
+The spectrum analyzer and oscilloscope from Winamp's classic main window, as a VST3 effect. The plugin passes audio through untouched and draws the 76 x 16 vis area at 1x to 10x.
 
-## Private use only
+## About
 
-This code is ported from the Winamp source release (see [Source reference](#source-reference)). That code is under the Winamp Collaborative License 1.0, which allows changes for private use and forbids distribution of changed versions. Keep this repo private and do not share the built plugin.
+This plugin is inspired by Winamp. It is a complete redevelopment and does not redistribute any Winamp code. The Winamp source release was used only as a reference for how the classic vis behaves.
 
 ## Source reference
 
-The port is based on the Winamp source release, as mirrored at [alexfreud/winamp](https://github.com/alexfreud/winamp) (branch `community`, commit [`0954e03`](https://github.com/alexfreud/winamp/tree/0954e03b3acbc11b6c90298598db6b6469568d72)). These are the files it reads from:
+The reference is the Winamp source release, as mirrored at [alexfreud/winamp](https://github.com/alexfreud/winamp) (branch `community`, commit [`0954e03`](https://github.com/alexfreud/winamp/tree/0954e03b3acbc11b6c90298598db6b6469568d72)). These are the files used as reference:
 
-| Original file | What it holds | Ported to |
+| Original file | What it holds | Implemented in |
 |---|---|---|
 | [`Src/Winamp/SABuffer.cpp`](https://github.com/alexfreud/winamp/blob/0954e03b3acbc11b6c90298598db6b6469568d72/Src/Winamp/SABuffer.cpp) | L + R sum, 512-sample Hann window, 256-sample step | `Source/Core/SpectrumAnalyzer.*` |
 | [`Src/Winamp/classic_vis.cpp`](https://github.com/alexfreud/winamp/blob/0954e03b3acbc11b6c90298598db6b6469568d72/Src/Winamp/classic_vis.cpp) | `makeSpecData` (75 bands) and `makeOscData` (scope points) | `Source/Core/SpectrumAnalyzer.*`, `Source/Core/Oscilloscope.*` |
@@ -21,7 +21,7 @@ The port is based on the Winamp source release, as mirrored at [alexfreud/winamp
 | [`Src/Winamp/options_classic.cpp`](https://github.com/alexfreud/winamp/blob/0954e03b3acbc11b6c90298598db6b6469568d72/Src/Winamp/options_classic.cpp) | The options and their ranges | `Source/Plugin/Parameters.cpp` |
 | [`Src/Winamp/FFT.cpp`](https://github.com/alexfreud/winamp/blob/0954e03b3acbc11b6c90298598db6b6469568d72/Src/Winamp/FFT.cpp) | `fft_9`, which calls `nsutil` (body not in the release) | `Source/Core/Fft.*` (written new) |
 
-## What is ported
+## What it reproduces
 
 - **Analysis**: L + R summed into a 512-sample Hann window that moves 256 samples per frame. Then an unnormalised FFT, magnitude x 0.5, and 75 semitone-spaced bands from Winamp's `fpow2` warp with Hermite interpolation.
 - **Drawing**: `draw_sa`'s integer bar falloff and peaks that fall faster each tick, on the same 32-row bottom-up bitmap. The bottom 2 rows of each bar are hidden, as in Winamp.
@@ -32,7 +32,7 @@ The one part not in the source release is the FFT itself (`nsutil`), so `Source/
 
 ## Options
 
-Right-click the vis for Winamp's menu. Left-click cycles the mode.
+Select **Settings** below the vis, or right-click the vis, for Winamp's menu. Left-click the vis to cycle the mode.
 
 | Option | Values | Default |
 |---|---|---|
@@ -45,7 +45,7 @@ Right-click the vis for Winamp's menu. Left-click cycles the mode.
 | Analyzer falloff | Slowest to Fastest | Moderate |
 | Peaks falloff | Slowest to Fastest | Slow |
 | Colors | Load a skin's `viscolor.txt`, or the defaults | defaults |
-| Size | 1x to 5x | 3x |
+| Size | 1x to 10x | 3x |
 
 The defaults are Winamp's, from `config.h`. Every option except Colors and Size is a host parameter, so it saves with the project and can be automated.
 

@@ -10,7 +10,7 @@
 
 namespace wcv {
 
-// Port of the single-size, non-windowshade paths of draw_sa
+// Matches the single-size, non-windowshade paths of draw_sa
 // (Src/Winamp/draw_sa.cpp) and the refresh logic of bivis_thread
 // (Src/Winamp/SA.cpp). Pixels are palette indices.
 class ClassicVis {
