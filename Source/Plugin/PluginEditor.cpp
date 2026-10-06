@@ -11,6 +11,8 @@ constexpr int kModeCount = 3;
 // sa_get in Src/Winamp/SA.cpp drops a frame more than 400 ms from now.
 constexpr std::uint32_t kStaleMs = 400;
 
+constexpr int kButtonHeight = 24;
+
 template <typename Frame>
 void takeLatest(FrameQueue<Frame>& queue, Frame& current, std::uint32_t& lastMs, std::uint32_t now)
 {
@@ -28,6 +30,8 @@ VisualizerEditor::VisualizerEditor(VisualizerProcessor& owner)
     : AudioProcessorEditor(owner)
     , processor_(owner)
 {
+    settingsButton_.onClick = [this] { showOptionsMenu(); };
+    addAndMakeVisible(settingsButton_);
     setScale(owner.editorScale);
     renderImage();
     startTimerHz(wcv::kTickHz);
@@ -37,7 +41,12 @@ void VisualizerEditor::paint(juce::Graphics& g)
 {
     g.fillAll(juce::Colours::black);
     g.setImageResamplingQuality(juce::Graphics::lowResamplingQuality);
-    g.drawImage(image_, getLocalBounds().toFloat());
+    g.drawImage(image_, getLocalBounds().withTrimmedBottom(kButtonHeight).toFloat());
+}
+
+void VisualizerEditor::resized()
+{
+    settingsButton_.setBounds(getLocalBounds().removeFromBottom(kButtonHeight));
 }
 
 void VisualizerEditor::mouseDown(const juce::MouseEvent& event)
@@ -147,5 +156,5 @@ void VisualizerEditor::chooseViscolor()
 void VisualizerEditor::setScale(int scale)
 {
     processor_.editorScale = scale;
-    setSize(wcv::kVisWidth * scale, wcv::kVisHeight * scale);
+    setSize(wcv::kVisWidth * scale, wcv::kVisHeight * scale + kButtonHeight);
 }

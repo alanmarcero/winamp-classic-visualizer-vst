@@ -41,7 +41,7 @@ public:
 
     // Whole-number zoom of the 76 x 16 vis area, saved with the project.
     static constexpr int kMinScale = 1;
-    static constexpr int kMaxScale = 5;
+    static constexpr int kMaxScale = 10;
     std::atomic<int> editorScale { 3 };
 
     juce::AudioProcessorValueTreeState parameters;
