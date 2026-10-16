@@ -1,5 +1,7 @@
 # Winamp Classic Visualizer (VST3)
 
+<img width="534" height="196" alt="image" src="https://github.com/user-attachments/assets/cb2ed132-e80e-492c-bedb-529d4f197312" />
+
 The spectrum analyzer and oscilloscope from Winamp's classic main window, as a VST3 effect. The plugin passes audio through untouched and draws the 76 x 16 vis area at 1x to 10x.
 
 ## About
