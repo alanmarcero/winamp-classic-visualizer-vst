@@ -34,6 +34,7 @@ private:
     juce::Image image_ { juce::Image::RGB, wcv::kVisWidth, wcv::kVisHeight, true };
     std::unique_ptr<juce::FileChooser> chooser_;
     juce::TextButton settingsButton_ { "Settings" };
+    juce::Label versionLabel_ { {}, "v1.1.0" };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VisualizerEditor)
 };
