@@ -32,6 +32,12 @@ VisualizerEditor::VisualizerEditor(VisualizerProcessor& owner)
 {
     settingsButton_.onClick = [this] { showOptionsMenu(); };
     addAndMakeVisible(settingsButton_);
+
+    versionLabel_.setText("v1.1.0", juce::dontSendNotification);
+    versionLabel_.setJustificationType(juce::Justification::centred);
+    versionLabel_.setColour(juce::Label::textColourId, juce::Colours::lightgrey);
+    versionLabel_.setFont(juce::FontOptions(11.0f));
+    addAndMakeVisible(versionLabel_);
     setScale(owner.editorScale);
     renderImage();
     startTimerHz(wcv::kTickHz);
@@ -46,7 +52,9 @@ void VisualizerEditor::paint(juce::Graphics& g)
 
 void VisualizerEditor::resized()
 {
-    settingsButton_.setBounds(getLocalBounds().removeFromBottom(kButtonHeight));
+    auto bottomBar = getLocalBounds().removeFromBottom(kButtonHeight);
+    versionLabel_.setBounds(bottomBar.removeFromRight(60));
+    settingsButton_.setBounds(bottomBar);
 }
 
 void VisualizerEditor::mouseDown(const juce::MouseEvent& event)
