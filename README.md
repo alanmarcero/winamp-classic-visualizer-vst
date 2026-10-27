@@ -1,6 +1,10 @@
 # Winamp Classic Visualizer (VST3)
 
-<img width="534" height="196" alt="image" src="https://github.com/user-attachments/assets/cb2ed132-e80e-492c-bedb-529d4f197312" />
+[Install with OpenVST Manager](https://github.com/alanmarcero/alan-m-OpenVSTManager/releases/latest)
+
+![Winamp Classic Visualizer native editor](assets/native-ui.png)
+
+*Captured from the released v1.1.0 VST3 editor. [Capture details and provenance](docs/SCREENSHOTS.md).*
 
 The spectrum analyzer and oscilloscope from Winamp's classic main window, as a VST3 effect. The plugin passes audio through untouched and draws the 76 x 16 vis area at 1x to 10x.
 
@@ -49,21 +53,32 @@ Select **Settings** below the vis, or right-click the vis, for Winamp's menu. Le
 | Colors | Load a skin's `viscolor.txt`, or the defaults | defaults |
 | Size | 1x to 10x | 3x |
 
-The defaults are Winamp's, from `config.h`. Every option except Colors and Size is a host parameter, so it saves with the project and can be automated.
+The defaults are Winamp's, from `config.h`. Every option except Colors and Size is a host parameter and can be automated. Colors and Size also save with the project.
 
 ## Build
+
+Requires CMake 3.22+, Git and a C++20 compiler (Xcode command-line tools on macOS or Visual Studio 2022 C++ tools on Windows). CMake downloads JUCE 8.0.9 and Catch2 3.9.1.
 
 GitHub Actions builds a universal macOS VST3 and a 64-bit Windows VST3. On each platform it runs the unit tests and `pluginval`, then uploads the zipped bundle as an artifact. To build by hand:
 
 ```sh
-cmake -B build -DCMAKE_BUILD_TYPE=Release
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 cmake --build build --config Release --parallel
 ctest --test-dir build -C Release --output-on-failure
 ```
 
+Outputs are in `build/WinampClassicVisualizer_artefacts/Release/VST3/`. Add `-DCMAKE_OSX_ARCHITECTURES="arm64;x86_64" -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0` for a universal macOS build, or `-A x64` with the Visual Studio generator on Windows.
+
 The unit tests cover the core in `Source/Core` and need no JUCE. Their expected pixels come from tracing `draw_sa` by hand.
 
 ## Install
+
+1. Download and install [OpenVST Manager](https://github.com/alanmarcero/alan-m-OpenVSTManager/releases/latest) for macOS or Windows.
+2. Open the manager and refresh the catalog.
+3. Choose **Winamp Classic Visualizer**, select **VST3**, and install.
+4. Rescan plugins in your DAW. If you chose a custom install folder, add it to the DAW's search paths.
+
+Release packages are **VST3 only**, for macOS 11+ (Apple Silicon/Intel universal) and Windows x64.
 
 Download the ZIP for your platform from [GitHub Releases](https://github.com/alanmarcero/winamp-classic-visualizer-vst/releases/latest), then unzip it. Tagged releases publish only after unit tests and pluginval pass on both platforms.
 
