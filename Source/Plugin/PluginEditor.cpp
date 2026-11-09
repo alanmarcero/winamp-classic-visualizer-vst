@@ -30,6 +30,7 @@ VisualizerEditor::VisualizerEditor(VisualizerProcessor& owner)
     : AudioProcessorEditor(owner)
     , processor_(owner)
 {
+    settingsButton_.setButtonText("Visualizer Options & Themes");
     settingsButton_.onClick = [this] { showOptionsMenu(); };
     addAndMakeVisible(settingsButton_);
 

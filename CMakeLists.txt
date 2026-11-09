@@ -60,6 +60,10 @@ if(WCV_BUILD_PLUGIN)
             juce::juce_recommended_config_flags
             juce::juce_recommended_lto_flags
             juce::juce_recommended_warning_flags)
+
+    add_executable(wcv_capture tools/capture.cpp)
+    target_include_directories(wcv_capture PRIVATE Source/Plugin Source/Core)
+    target_link_libraries(wcv_capture PRIVATE WinampClassicVisualizer classic_vis_core juce::juce_audio_utils)
 endif()
 
 if(WCV_BUILD_TESTS)
