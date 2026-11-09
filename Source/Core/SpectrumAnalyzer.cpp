@@ -81,11 +81,15 @@ const std::array<float, kBands + 1>& SpectrumAnalyzer::bandEdges()
 SpectrumFrame SpectrumAnalyzer::computeBands(std::array<float, kFftSize> windowed)
 {
     forwardFft512(windowed);
-    std::ranges::for_each(std::views::iota(0, kFftBins), [&windowed](int i) {
+    const float dc = std::abs(windowed[0]) * kSpecScale;
+    const float nyquist = std::abs(windowed[1]) * kSpecScale;
+    std::ranges::for_each(std::views::iota(1, kFftBins), [&windowed](int i) {
         const float sinT = windowed[2 * i];
         const float cosT = windowed[2 * i + 1];
         windowed[i] = std::sqrt(sinT * sinT + cosT * cosT) * kSpecScale;
     });
+    windowed[0] = dc;
+    windowed[kFftBins] = nyquist;
 
     const auto& edges = bandEdges();
     SpectrumFrame bands {};
