@@ -58,9 +58,12 @@ std::pair<int, int> scopeRows(ScopeStyle style, int level, int previous)
 bool ClassicVis::tick(const VisSettings& settings, const SpectrumFrame& spectrum, const ScopeFrame& scope)
 {
     if (settings.mode == VisMode::Off) {
+        if (blanked_) return false;
         blank();
+        blanked_ = true;
         return true;
     }
+    blanked_ = false;
 
     const bool draw = ++cycle_ >= settings.refreshDivider;
     if (draw) {

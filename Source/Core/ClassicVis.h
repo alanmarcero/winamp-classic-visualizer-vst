@@ -35,6 +35,7 @@ private:
     std::array<float, kBands> peakSpeeds_ {};  // t_vx
     std::array<std::uint8_t, kVisWidth * kBufferRows> pixels_ {};
     int cycle_ = 0;
+    bool blanked_ = false;
 };
 
 } // namespace wcv

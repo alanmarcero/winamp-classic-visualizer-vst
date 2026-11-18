@@ -40,18 +40,20 @@ void forwardFft512(std::array<float, kFftSize>& signal)
         bins[reverseBits(i)] = signal[i];
     });
 
-    std::ranges::for_each(std::views::iota(1, kFftOrder + 1), [&bins](int stage) {
+    for (int stage = 1; stage <= kFftOrder; ++stage) {
         const int span = 1 << stage;
         const int half = span / 2;
-        std::ranges::for_each(std::views::iota(0, kFftSize / 2), [&](int butterfly) {
-            const int k = butterfly % half;
-            const int top = (butterfly / half) * span + k;
-            const auto even = bins[top];
-            const auto odd = bins[top + half] * twiddles()[k * (kFftSize / span)];
-            bins[top] = even + odd;
-            bins[top + half] = even - odd;
-        });
-    });
+        const int twiddleStride = kFftSize / span;
+        for (int base = 0; base < kFftSize; base += span) {
+            for (int k = 0; k < half; ++k) {
+                const int top = base + k;
+                const auto even = bins[top];
+                const auto odd = bins[top + half] * twiddles()[k * twiddleStride];
+                bins[top] = even + odd;
+                bins[top + half] = even - odd;
+            }
+        }
+    }
 
     signal[0] = bins[0].real();
     signal[1] = bins[kFftBins].real();

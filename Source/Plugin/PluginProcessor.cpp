@@ -27,15 +27,25 @@ bool VisualizerProcessor::isBusesLayoutSupported(const BusesLayout& layouts) con
 
 void VisualizerProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
+    if (getActiveEditor() == nullptr)
+        return;
+
     const int channels = getTotalNumInputChannels();
     if (channels == 0)
+        return;
+
+    const auto mode = static_cast<wcv::VisMode>(static_cast<int>(parameters.getRawParameterValue(params::kMode)->load()));
+    if (mode == wcv::VisMode::Off)
         return;
 
     const auto samples = static_cast<std::size_t>(buffer.getNumSamples());
     const std::span<const float> left(buffer.getReadPointer(0), samples);
     const std::span<const float> right(buffer.getReadPointer(channels > 1 ? 1 : 0), samples);
-    analyzer_.push(left, right, [this](const wcv::SpectrumFrame& frame) { spectrumFrames.push(frame); });
-    scope_.push(left, right, std::min(channels, 2), [this](const wcv::ScopeFrame& frame) { scopeFrames.push(frame); });
+    if (mode == wcv::VisMode::Spectrum) {
+        analyzer_.push(left, right, [this](const wcv::SpectrumFrame& frame) { spectrumFrames.push(frame); });
+    } else if (mode == wcv::VisMode::Oscilloscope) {
+        scope_.push(left, right, std::min(channels, 2), [this](const wcv::ScopeFrame& frame) { scopeFrames.push(frame); });
+    }
 }
 
 juce::AudioProcessorEditor* VisualizerProcessor::createEditor()
