@@ -4,7 +4,7 @@
 
 A visual companion for listening, mixing, and performance. Winamp Classic Visualizer brings the moving spectrum and oscilloscope views of Winamp’s classic player into a DAW, so you can see how a sound changes while the audio continues unchanged.
 
-![Winamp Classic Visualizer](assets/native-ui.png)
+![Winamp Classic Visualizer](docs/screenshots/preview.png)
 
 ## Features
 
