@@ -30,6 +30,7 @@ VisualizerEditor::VisualizerEditor(VisualizerProcessor& owner)
     : AudioProcessorEditor(owner)
     , processor_(owner)
 {
+    processor_.editorOpened();
     settingsButton_.setButtonText("Visualizer Options & Themes");
     settingsButton_.onClick = [this] { showOptionsMenu(); };
     addAndMakeVisible(settingsButton_);
@@ -42,6 +43,11 @@ VisualizerEditor::VisualizerEditor(VisualizerProcessor& owner)
     setScale(owner.editorScale);
     renderImage();
     startTimerHz(wcv::kTickHz);
+}
+
+VisualizerEditor::~VisualizerEditor()
+{
+    processor_.editorClosed();
 }
 
 void VisualizerEditor::paint(juce::Graphics& g)
@@ -96,13 +102,17 @@ void VisualizerEditor::renderImage()
 void VisualizerEditor::showOptionsMenu()
 {
     const auto settings = params::readSettings(processor_.parameters);
+    const juce::Component::SafePointer<VisualizerEditor> safe(this);
     juce::PopupMenu menu;
     addChoiceMenu(menu, params::kMode, "Modes");
 
     juce::PopupMenu analyzer;
     addChoiceMenu(analyzer, params::kColoring, "Coloring");
     analyzer.addItem("Show peaks", true, settings.peaks,
-                     [this, peaks = settings.peaks] { setParameterIndex(params::kPeaks, peaks ? 0 : 1); });
+                     [safe, peaks = settings.peaks] {
+                         if (safe != nullptr)
+                             safe->setParameterIndex(params::kPeaks, peaks ? 0 : 1);
+                     });
     addChoiceMenu(analyzer, params::kBandWidth, "Band width");
     menu.addSubMenu("Analyzer options", analyzer);
 
@@ -112,17 +122,25 @@ void VisualizerEditor::showOptionsMenu()
     addChoiceMenu(menu, params::kPeakFalloff, "Peaks falloff");
 
     juce::PopupMenu colors;
-    colors.addItem("Load viscolor.txt...", [this] { chooseViscolor(); });
-    colors.addItem("Default colors", [this] {
-        processor_.setViscolor({});
-        renderImage();
-        repaint();
+    colors.addItem("Load viscolor.txt...", [safe] {
+        if (safe != nullptr)
+            safe->chooseViscolor();
+    });
+    colors.addItem("Default colors", [safe] {
+        if (safe == nullptr)
+            return;
+        safe->processor_.setViscolor({});
+        safe->renderImage();
+        safe->repaint();
     });
     menu.addSubMenu("Colors", colors);
 
     juce::PopupMenu size;
     std::ranges::for_each(std::views::iota(VisualizerProcessor::kMinScale, VisualizerProcessor::kMaxScale + 1), [&](int scale) {
-        size.addItem(juce::String(scale) + "x", true, processor_.editorScale == scale, [this, scale] { setScale(scale); });
+        size.addItem(juce::String(scale) + "x", true, processor_.editorScale == scale, [safe, scale] {
+            if (safe != nullptr)
+                safe->setScale(scale);
+        });
     });
     menu.addSubMenu("Size", size);
 
@@ -132,10 +150,14 @@ void VisualizerEditor::showOptionsMenu()
 void VisualizerEditor::addChoiceMenu(juce::PopupMenu& menu, const char* parameterId, const juce::String& title)
 {
     const auto* parameter = dynamic_cast<juce::AudioParameterChoice*>(processor_.parameters.getParameter(parameterId));
+    const juce::Component::SafePointer<VisualizerEditor> safe(this);
     juce::PopupMenu submenu;
     std::ranges::for_each(std::views::iota(0, parameter->choices.size()), [&](int index) {
         submenu.addItem(parameter->choices[index], true, parameter->getIndex() == index,
-                        [this, parameterId, index] { setParameterIndex(parameterId, index); });
+                        [safe, parameterId, index] {
+                            if (safe != nullptr)
+                                safe->setParameterIndex(parameterId, index);
+                        });
     });
     menu.addSubMenu(title, submenu);
 }
@@ -152,13 +174,15 @@ void VisualizerEditor::chooseViscolor()
 {
     chooser_ = std::make_unique<juce::FileChooser>("Load viscolor.txt", juce::File {}, "*.txt");
     chooser_->launchAsync(juce::FileBrowserComponent::openMode | juce::FileBrowserComponent::canSelectFiles,
-                          [this](const juce::FileChooser& chooser) {
+                          [safe = juce::Component::SafePointer<VisualizerEditor>(this)](const juce::FileChooser& chooser) {
+                              if (safe == nullptr)
+                                  return;
                               const auto file = chooser.getResult();
                               if (file == juce::File {})
                                   return;
-                              processor_.setViscolor(file.loadFileAsString());
-                              renderImage();
-                              repaint();
+                              safe->processor_.setViscolor(file.loadFileAsString());
+                              safe->renderImage();
+                              safe->repaint();
                           });
 }
 

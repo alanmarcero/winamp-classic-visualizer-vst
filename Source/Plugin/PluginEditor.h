@@ -11,6 +11,7 @@
 class VisualizerEditor final : public juce::AudioProcessorEditor, private juce::Timer {
 public:
     explicit VisualizerEditor(VisualizerProcessor& owner);
+    ~VisualizerEditor() override;
 
     void paint(juce::Graphics& g) override;
     void resized() override;

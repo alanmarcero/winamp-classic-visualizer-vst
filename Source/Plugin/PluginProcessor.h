@@ -38,6 +38,8 @@ public:
     // An empty text restores the default colours.
     void setViscolor(const juce::String& text);
     wcv::Palette palette() const;
+    void editorOpened() noexcept { activeEditorCount_.fetch_add(1, std::memory_order_relaxed); }
+    void editorClosed() noexcept { activeEditorCount_.fetch_sub(1, std::memory_order_relaxed); }
 
     // Whole-number zoom of the 76 x 16 vis area, saved with the project.
     static constexpr int kMinScale = 1;
@@ -55,6 +57,7 @@ private:
     mutable juce::CriticalSection paletteLock_;
     juce::String viscolor_;
     wcv::Palette palette_ = wcv::kDefaultPalette;
+    std::atomic<int> activeEditorCount_ { 0 };
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(VisualizerProcessor)
 };

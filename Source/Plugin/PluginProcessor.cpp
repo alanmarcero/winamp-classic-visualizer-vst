@@ -27,7 +27,7 @@ bool VisualizerProcessor::isBusesLayoutSupported(const BusesLayout& layouts) con
 
 void VisualizerProcessor::processBlock(juce::AudioBuffer<float>& buffer, juce::MidiBuffer&)
 {
-    if (getActiveEditor() == nullptr)
+    if (activeEditorCount_.load(std::memory_order_relaxed) <= 0)
         return;
 
     const int channels = getTotalNumInputChannels();
